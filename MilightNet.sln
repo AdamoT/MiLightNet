@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MiLightNet", "MilightNet\MiLightNet.shproj", "{AF10B7E8-C536-4FE2-92E8-B2E4E12296CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MiLightNet_TestConsoleApp", "MiLightNet_TestConsoleApp\MiLightNet_TestConsoleApp.csproj", "{383B7BED-D025-4E52-828A-1FB6827D9BC2}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		MilightNet\MilightNet.projitems*{383b7bed-d025-4e52-828a-1fb6827d9bc2}*SharedItemsImports = 4
+		MilightNet\MilightNet.projitems*{af10b7e8-c536-4fe2-92e8-b2e4e12296cf}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{383B7BED-D025-4E52-828A-1FB6827D9BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{383B7BED-D025-4E52-828A-1FB6827D9BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{383B7BED-D025-4E52-828A-1FB6827D9BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{383B7BED-D025-4E52-828A-1FB6827D9BC2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC94E8E8-601C-46C7-996C-E6BBD19BADC0}
+	EndGlobalSection
+EndGlobal

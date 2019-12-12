@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>af10b7e8-c536-4fe2-92e8-b2e4e12296cf</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>MiLightNet</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\Consts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\MiLightZones.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\V6\MiLightMessageV6.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\V6\MiLightV6DynamicModes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IMiLightController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MiLight.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\V6\MiLightControllerV6.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\IMiLightMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\UdpUtils.cs" />
+  </ItemGroup>
+</Project>

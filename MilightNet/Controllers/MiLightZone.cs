@@ -3,7 +3,7 @@
     /// <summary>
     /// Zone definition
     /// </summary>
-    public enum MiLightZones : byte
+    public enum MiLightZone
     {
         All = 0,
         One,

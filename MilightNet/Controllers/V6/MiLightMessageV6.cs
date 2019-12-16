@@ -4,7 +4,7 @@
     {
         #region IMiLightMessage
 
-        public byte[] Data => _Data;
+        public byte[] GetData() => _Data;
 
         public virtual void CalculateChecksum()
         {

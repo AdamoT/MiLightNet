@@ -10,13 +10,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\Consts.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controllers\MiLightZones.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controllers\MiLightZone.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\V6\MiLightMessageV6.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\V6\MiLightV6DynamicModes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IMiLightController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MiLight.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\V6\MiLightControllerV6.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controllers\IMiLightMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MiLightControllerInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MiLightControllerType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MiLightControllerVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\UdpExchangeResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\UdpUtils.cs" />
   </ItemGroup>
 </Project>

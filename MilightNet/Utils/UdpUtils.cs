@@ -12,8 +12,11 @@ namespace MiLightNet.Utils
 
         public static void Flush(UdpClient udp)
         {
+            if (udp is null)
+                throw new ArgumentNullException(nameof(udp));
+
             IPEndPoint endPoint = null;
-            while(udp.Available > 0)
+            while (udp.Available > 0)
             {
                 udp.Receive(ref endPoint);
             }
@@ -21,6 +24,9 @@ namespace MiLightNet.Utils
 
         public static Task<UdpExchangeResult> ExchangeDatagram(UdpClient udp, byte[] data, TimeSpan timeout)
         {
+            if (udp is null)
+                throw new ArgumentNullException(nameof(udp));
+
             return Task.Run(() =>
             {
                 udp.Client.ReceiveTimeout = udp.Client.SendTimeout = (int)timeout.TotalMilliseconds;
@@ -34,16 +40,15 @@ namespace MiLightNet.Utils
                 if (response == null)
                     throw new System.IO.IOException("Failed to read response");
 
-                return new UdpExchangeResult
-                {
-                    RemoteEndPoint = remoteEndPoint,
-                    Data = response,
-                };
+                return new UdpExchangeResult(remoteEndPoint, response);
             });
         }
 
         public static Task<UdpExchangeResult> ExchangeDatagram(UdpClient udp, byte[] data, CancellationToken cancellationToken)
         {
+            if (udp is null)
+                throw new ArgumentNullException(nameof(udp));
+
             return Task.Run(() =>
             {
                 udp.Client.SendTimeout = 100;//Arbitrary value
@@ -65,13 +70,9 @@ namespace MiLightNet.Utils
                         if (response == null)
                             throw new System.IO.IOException("Failed to read response");
 
-                        return new UdpExchangeResult
-                        {
-                            RemoteEndPoint = remoteEndPoint,
-                            Data = response,
-                        };
+                        return new UdpExchangeResult(remoteEndPoint, response);
                     }
-                    catch(SocketException socketException)
+                    catch (SocketException socketException)
                     {
                         if (socketException.SocketErrorCode == SocketError.TimedOut)
                             continue;
@@ -85,11 +86,7 @@ namespace MiLightNet.Utils
 
         #region Types
 
-        public struct UdpExchangeResult
-        {
-            public IPEndPoint RemoteEndPoint;
-            public byte[] Data;
-        }
+
 
         #endregion Types
     }

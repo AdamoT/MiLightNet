@@ -2,8 +2,8 @@
 {
     public interface IMiLightMessage
     {
-        byte[] Data { get; }
+        byte[] GetData();
 
         void CalculateChecksum();
-    }    
+    }
 }

@@ -2,7 +2,7 @@
 {
     public enum MiLightV6DynamicModes
     {
-        SevenColorGradualChange,
+        SevenColorGradualChange = 0,
         WhiteGradualChange,
         RgbGradualChange,
         SevenColorJump,

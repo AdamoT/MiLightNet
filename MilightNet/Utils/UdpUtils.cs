@@ -30,6 +30,7 @@ namespace MiLightNet.Utils
             return Task.Run(() =>
             {
                 udp.Client.ReceiveTimeout = udp.Client.SendTimeout = (int)timeout.TotalMilliseconds;
+                Flush(udp);
                 var bytesSent = udp.Send(data, data.Length);
                 if (bytesSent != data.Length)
                     throw new System.IO.IOException("Failed to send all data");
@@ -83,11 +84,5 @@ namespace MiLightNet.Utils
         }
 
         #endregion Public Methods
-
-        #region Types
-
-
-
-        #endregion Types
     }
 }

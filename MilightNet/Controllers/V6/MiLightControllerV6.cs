@@ -131,6 +131,7 @@ namespace MiLightNet.Controllers.V6
         /// <returns>Awaitable Task</returns>
         public async Task SetHue(MiLightZone zone, byte value)
         {
+            value += 26;
             var msg = new MiLightMessageV6()
             {
                 Value = value | (value << 8) | (value << 16) | (value << 24),
@@ -314,18 +315,30 @@ namespace MiLightNet.Controllers.V6
                 if (_IsInitialized)
                     return;
 
-                var response = await SendMsgReceiveResponse(MiLightMessageV6.IdsDiscoveryMsg)
-                    .ConfigureAwait(false);
-
-                _Id1 = response[19];
-                _Id2 = response[20];
-
-                _IsInitialized = true;
+                if (await GetIds()
+                    .ConfigureAwait(false))
+                {
+                    _IsInitialized = true;
+                }
             }
             finally
             {
                 _Semaphore.Release();
             }
+        }
+
+        private async Task<bool> GetIds()
+        {
+            var response = await SendMsgReceiveResponse(MiLightMessageV6.IdsDiscoveryMsg)
+                .ConfigureAwait(false);
+
+            if (response.Length > 20)
+            {
+                _Id1 = response[19];
+                _Id2 = response[20];
+                return true;
+            }
+            else return false;
         }
 
         private async Task SendMsgValidateResponse(MiLightMessageV6 msg)
@@ -338,16 +351,25 @@ namespace MiLightNet.Controllers.V6
             {
                 await _Semaphore.WaitAsync()
                     .ConfigureAwait(false);
-                msg.SequenceNo = _SequenceNo++;
-                msg.ID1 = _Id1;
-                msg.ID2 = _Id2;
 
-                var response = await SendMsgReceiveResponse(msg)
-                    .ConfigureAwait(false);
-                if (await ValidateResponse(msg, response)
-                    .ConfigureAwait(false))
-                    return;
-                else throw new IOException("Failed to receive valid response");
+                for (int i = 0; i < 2; ++i)
+                {
+                    msg.SequenceNo = _SequenceNo++;
+                    msg.ID1 = _Id1;
+                    msg.ID2 = _Id2;
+
+                    var response = await SendMsgReceiveResponse(msg)
+                        .ConfigureAwait(false);
+                    if (await ValidateResponse(msg, response)
+                        .ConfigureAwait(false))
+                        return;
+                    else
+                    {//Try obtaining ids again
+                        await GetIds()
+                            .ConfigureAwait(false);
+                    }
+                }
+                throw new IOException("Failed to receive valid response");
             }
             finally
             {
@@ -380,8 +402,6 @@ namespace MiLightNet.Controllers.V6
         {
             if (data[data.Length - 1] != 0)
             {//Last byte should be zero
-                await Initialize()
-                    .ConfigureAwait(false);
                 return false;
             }
 

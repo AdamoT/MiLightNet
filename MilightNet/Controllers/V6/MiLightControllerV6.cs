@@ -306,25 +306,21 @@ namespace MiLightNet.Controllers.V6
 
         #region Private Methods
 
-        private async Task Initialize()
+        private async Task<bool> Initialize()
         {
             if (_IsInitialized)
-                return;
+                return true;
 
             try
             {
                 await _Semaphore.WaitAsync()
                     .ConfigureAwait(false);
+
                 if (_IsInitialized)
-                    return;
+                    return true;
 
-                var response = await SendMsgReceiveResponse(MiLightMessageV6.IdsDiscoveryMsg)
+                return _IsInitialized = await GetIds()
                     .ConfigureAwait(false);
-
-                _Id1 = response[19];
-                _Id2 = response[20];
-
-                _IsInitialized = true;
             }
             finally
             {
@@ -332,26 +328,65 @@ namespace MiLightNet.Controllers.V6
             }
         }
 
+        private async Task<bool> GetIds()
+        {
+            try
+            {
+                var response = await SendMsgReceiveResponse(MiLightMessageV6.IdsDiscoveryMsg)
+                        .ConfigureAwait(false);
+
+                if (response.Length > 20)
+                {
+                    _Id1 = response[19];
+                    _Id2 = response[20];
+                    return true;
+                }
+                else return false;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+        }
+
         private async Task SendMsgValidateResponse(MiLightMessageV6 msg)
         {
             if (!_IsInitialized)
-                await Initialize()
-                    .ConfigureAwait(false);
+            {
+                if (!await Initialize()
+                    .ConfigureAwait(false))
+                {
+                    throw new IOException("Failed to initialize");
+                }
+            }
 
             try
             {
                 await _Semaphore.WaitAsync()
                     .ConfigureAwait(false);
-                msg.SequenceNo = _SequenceNo++;
-                msg.ID1 = _Id1;
-                msg.ID2 = _Id2;
 
-                var response = await SendMsgReceiveResponse(msg)
-                    .ConfigureAwait(false);
-                if (await ValidateResponse(msg, response)
-                    .ConfigureAwait(false))
-                    return;
-                else throw new IOException("Failed to receive valid response");
+                for (int i = 0; i < 2; ++i)
+                {
+                    msg.SequenceNo = _SequenceNo++;
+                    msg.ID1 = _Id1;
+                    msg.ID2 = _Id2;
+
+                    var response = await SendMsgReceiveResponse(msg)
+                        .ConfigureAwait(false);
+
+                    if (ValidateResponse(response))
+                    {
+                        return;
+                    }
+                    else
+                    {//Try obtaining ids again
+                        await GetIds()
+                            .ConfigureAwait(false);
+                    }
+                }
+
+                //Failed
+                throw new IOException("Failed to receive valid response");
             }
             finally
             {
@@ -372,7 +407,7 @@ namespace MiLightNet.Controllers.V6
                     return result.GetData();
                 }
                 catch (IOException)
-                {
+                {//Retry
                     continue;
                 }
             }
@@ -380,12 +415,10 @@ namespace MiLightNet.Controllers.V6
             throw new IOException("Failed to receive response");
         }
 
-        private async Task<bool> ValidateResponse(IMiLightMessage msg, byte[] data)
+        private static bool ValidateResponse(byte[] data)
         {
             if (data[data.Length - 1] != 0)
             {//Last byte should be zero
-                await Initialize()
-                    .ConfigureAwait(false);
                 return false;
             }
 

@@ -60,10 +60,10 @@ namespace MiLightNet.Controllers.V6
             get
             {
                 if (_Udp == null)
-                {
                     _Udp = new UdpClient();
+                if (!_Udp.Client.Connected)
                     _Udp.Connect(EndPoint);
-                }
+
                 return _Udp;
             }
         }

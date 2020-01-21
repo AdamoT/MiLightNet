@@ -60,9 +60,15 @@ namespace MiLightNet.Controllers.V6
             get
             {
                 if (_Udp == null)
-                    _Udp = new UdpClient();
-                if (!_Udp.Client.Connected)
-                    _Udp.Connect(EndPoint);
+                {
+                    _Udp = new UdpClient(EndPoint);
+                }
+
+                if(!_Udp.Client.Connected)
+                {//Socket disconnected? How is it possible that udp gets disconnected?
+                    _Udp.Dispose();
+                    _Udp = new UdpClient(EndPoint);
+                }
 
                 return _Udp;
             }
